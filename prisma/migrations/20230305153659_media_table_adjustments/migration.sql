@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE `medias` ADD COLUMN `image` LONGBLOB NULL,
+    ADD COLUMN `ownercode` VARCHAR(25) NULL,
+    ADD COLUMN `ownertype` VARCHAR(25) NULL,
+    MODIFY `postId` INTEGER NULL DEFAULT 1,
+    MODIFY `status` INTEGER NULL DEFAULT 1;

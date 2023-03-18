@@ -1,0 +1,208 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  code          String?   @db.VarChar(25)
+  email         String?   @unique
+  name          String?   @db.VarChar(255)
+  password      String?
+  password_hash String?
+  type          String?
+  status        Int       @default(1)
+  created_by    String?   @db.VarChar(25)
+  updated_by    String?   @db.VarChar(25)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime? @updatedAt
+
+  @@map(name: "users")
+}
+
+model Post {
+  id             Int       @id @default(autoincrement())
+  code           String?   @db.VarChar(25)
+  usercode       String?   @db.VarChar(25)
+  authorcode     String?   @db.VarChar(25)
+  categorycode   String?   @db.VarChar(25)
+  title          String?   @db.VarChar(255)
+  slug           String?   @db.VarChar(255)
+  subtitle       String?   @db.VarChar(255)
+  tags           String?   @db.VarChar(255)
+  obs            String?   @db.VarChar(255)
+  content        String?   @db.Text
+  text           String?   @db.Text // substituir o campo text por content
+  summary        String?   @db.VarChar(255) // substituir o campo summary por overview
+  overview       String?   @db.VarChar(255) // resumo do texto
+  additionaltext String?   @db.VarChar(255)
+  pdf            String?   @db.VarChar(255)
+  pdftext        String?   @db.VarChar(255)
+  url            String?   @db.VarChar(255)
+  urltext        String?   @db.VarChar(255)
+  video          String?   @db.VarChar(255)
+  videotitle     String?   @db.VarChar(255)
+  videotext      String?   @db.VarChar(255)
+  featureimage   String?   @db.VarChar(255)
+  level          String?   @default("basic") @db.VarChar(25) // basic, medium, advanced, expert
+  strip          String?   @db.VarChar(25) // highlights (destaques), promotion, top picks, top sellers
+  type           String?   @default("article") @db.VarChar(25) // article, tutorial, course, solution, news, lesson or chapter
+  group          String?   @db.VarChar(255) // na questão das aulas, esse campo ajudará a agrupar as aulas do mesmo capítulo 
+  access         String?   @default("free") @db.VarChar(25) // free or paid
+  readyClasses   Boolean?  @default(false) // se course, já existem aulas prontas?
+  order          Int?      @default(1)
+  status         Int?      @default(1) // 1-ativo, 2-para publicar, 3-lixeira
+  created_by     String?   @db.VarChar(25)
+  updated_by     String?   @db.VarChar(25)
+  created_at     DateTime? @default(now())
+  updated_at     DateTime? @updatedAt
+
+  @@map(name: "posts")
+}
+
+model Category {
+  id         Int       @id @default(autoincrement())
+  code       String?   @db.VarChar(25)
+  name       String?   @db.VarChar(255)
+  slug       String?   @db.VarChar(255)
+  status     Int       @default(1)
+  created_by String?   @db.VarChar(25)
+  updated_by String?   @db.VarChar(25)
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map(name: "categories")
+}
+
+model Author {
+  id         Int       @id @default(autoincrement())
+  code       String?   @db.VarChar(25)
+  name       String?   @db.VarChar(255)
+  slug       String?   @db.VarChar(255)
+  status     Int       @default(1)
+  created_by String?   @db.VarChar(25)
+  updated_by String?   @db.VarChar(25)
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map(name: "authors")
+}
+
+model Media {
+  id          Int       @id @default(autoincrement())
+  code        String?   @db.VarChar(25)
+  postId      Int?      @default(1)
+  ownercode   String?   @db.VarChar(25)
+  ownertype   String?   @db.VarChar(25) // ex: post, user
+  typecontent String?   @default("url") @db.VarChar(25) // url or blob
+  type        String?   @default("image") @db.VarChar(25) // image, video, pdf, url 
+  local       String?   @db.VarChar(25) // ex: feature image, body
+  url         String?   @db.VarChar(255)
+  filename    String?   @db.VarChar(255)
+  file        Bytes?    @db.LongBlob
+  image       Bytes?    @db.LongBlob
+  title       String?   @db.VarChar(255)
+  subtitle    String?   @db.VarChar(255)
+  overview    String?   @db.VarChar(255)
+  order       Int?      @default(1)
+  status      Int?      @default(1)
+  created_by  String?   @db.VarChar(25)
+  updated_by  String?   @db.VarChar(25)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  @@map(name: "medias")
+}
+
+model Comment {
+  id               Int       @id @default(autoincrement())
+  code             String?   @db.VarChar(25)
+  postId           Int       @default(0)
+  postcode         String?   @db.VarChar(25)
+  type             String?   @db.VarChar(25)
+  image            String?   @db.VarChar(255)
+  author           String?   @db.VarChar(255)
+  authorcode       String?   @db.VarChar(25)
+  comment          String?   @db.VarChar(255)
+  reply            String?   @db.VarChar(255)
+  replyowner       String?   @db.VarChar(255)
+  replyownercode   String?   @db.VarChar(25)
+  status           Int       @default(1)
+  created_by       String?   @db.VarChar(25)
+  updated_by       String?   @db.VarChar(25)
+  created_at       DateTime  @default(now())
+  updated_at       DateTime? @updatedAt
+  reply_created_at DateTime?
+
+  @@map(name: "coments")
+}
+
+model Lesson {
+  id          Int       @id @default(autoincrement())
+  code        String?   @db.VarChar(25)
+  coursecode  String?   @db.VarChar(25)
+  chaptercode String?   @db.VarChar(25)
+  title       String?   @db.VarChar(255)
+  videourl    String?   @db.VarChar(255)
+  subtitle    String?   @db.VarChar(255)
+  type        String?   @db.VarChar(25) // lesson or chapter
+  authorcode  String?   @db.VarChar(25)
+  content     String?   @db.Text
+  overview    String?   @db.VarChar(255) // resumo do texto
+  order       Int       @default(0) // ordem de exibição da aula
+  status      Int       @default(1)
+  created_by  String?   @db.VarChar(25)
+  updated_by  String?   @db.VarChar(25)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  @@map(name: "lessons")
+}
+
+model Chapter {
+  id         Int       @id @default(autoincrement())
+  code       String?   @db.VarChar(25)
+  coursecode String?   @db.VarChar(25)
+  title      String?   @db.VarChar(255)
+  subtitle   String?   @db.VarChar(255)
+  authorcode String?   @db.VarChar(25)
+  content    String?   @db.Text
+  overview   String?   @db.VarChar(255) // resumo do texto
+  order      Int       @default(0) // ordem de exibição do capítulo
+  status     Int       @default(1)
+  created_by String?   @db.VarChar(25)
+  updated_by String?   @db.VarChar(25)
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map(name: "chapters")
+}
+
+model View {
+  id          Int      @id @default(autoincrement())
+  code        String?  @db.VarChar(25)
+  visitedpage String?  @db.VarChar(255)
+  ipguest     String?  @db.VarChar(255)
+  region      String?  @db.VarChar(25)
+  country     String?  @db.VarChar(25)
+  created_at  DateTime @default(now())
+
+  @@map(name: "views")
+}
+
+model Config {
+  id         Int       @id @default(autoincrement())
+  created_by String?   @db.VarChar(25)
+  updated_by String?   @db.VarChar(25)
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map(name: "configs")
+}

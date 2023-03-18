@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `medias` ADD COLUMN `order` INTEGER NULL DEFAULT 1,
+    ADD COLUMN `overview` VARCHAR(255) NULL,
+    ADD COLUMN `subtitle` VARCHAR(255) NULL,
+    ADD COLUMN `title` VARCHAR(255) NULL;

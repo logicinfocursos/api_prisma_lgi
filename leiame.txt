@@ -1,0 +1,96 @@
+sources:
+https://www.youtube.com/watch?v=620br2rSkFQ
+https://www.youtube.com/watch?v=6mtGruhdkQo
+
+- criar o package.json:
+npm init -y
+
+- instalar prisma sucrase e o nodemon como dependência de desenvolvimento
+yarn add sucrase nodemon prisma -D
+
+- instalar o express cors
+yarn add express
+
+- alterar o package.json
+ "scripts": {
+    "dev": "nodemon scr/server.js"
+    },
+
+- criar arquivo nodemon.json 
+source: https://dev.to/antoniel/how-to-set-up-nodemon-sucrase-31ic
+{
+    "execMap": {
+        "js": "node -r sucrase/register"
+    }
+}   
+
+- inicializar o prisma
+yarn prisma init
+
+- alterar o arquivo prisma/schema.prisma, inserindo a referência para o sqlite
+fonte: https://www.prisma.io/docs/concepts/database-connectors/sqlite
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+obs.: por padrão a referência é para postgres (sorce: https://www.prisma.io/docs/concepts/database-connectors/postgresql)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+para mysql (source: https://www.prisma.io/docs/concepts/database-connectors/mysql):
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+a instrução "yarn prisma init" cria também um arquivo .env na raiz do projeto com a url para postgres. 
+DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+
+Para mysql, alterar a url para:
+DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"
+
+Para sqlite você pode "comentar" essa linha ou até mesmo excluir o arquivo .env
+
+Para criar uma tabela, basta inserir a estrutura no próprio arquivo schema.prisma (source: https://www.prisma.io/docs/concepts/components/prisma-schema/data-model):
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+  role    Role     @default(USER)
+  posts   Post[]
+  profile Profile?
+}
+
+- para criar realacionamento entre as tabelas (source: https://www.prisma.io/docs/concepts/components/prisma-schema/relations/one-to-many-relations)
+
+- para executar a primeira migration:
+yarn prisma migrate dev 
+
+será gerada a o bd dev
+
+- acessar o prisma studio
+yarn prisma studio
+
+
+*** docker ***
+- obter a imagem mysql:
+docker pull mysql
+
+-listar images
+
+- listar containers
+docker container ls
+
+- rodar o container
+docker run -p 3309:3306 --name mysql_prima -e MYSQL_ROOT_PASSWORD=root -d mysql
+
+- excluir imagem
+docker rm imageID
+
+- "stopar" o serviço na porta 3306
+netstat -ano|findstr "PID :3306"
+taskkill /PID 5908 /f
